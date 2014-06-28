@@ -7,8 +7,7 @@ require 'date'
 #####################################################################
 
 # For more information about the parameters, see https://appannie.zendesk.com/entries/23215097-2-App-Sales
-username = "" # App Annie username
-password = "" # App Annie password
+api_key = "" # Generate API key here: https://www.appannie.com/account/api/key/
 account_id = "" # App Annie account connection id. You can get all account connection info by calling /v1/accounts
 graph_title = ""
 graph_type = "line"
@@ -26,7 +25,6 @@ outputFile = "/Users/tim/Dropbox/Status\ Board/salesboard.json"
 # Configuration End
 #####################################################################
 
-options = { :basic_auth => { :username => username , :password => password } }
 end_date = Date.today
 start_date = (end_date - days_to_show)
 
@@ -36,7 +34,7 @@ max_total = 0
 
 products.each do |p|
   sales_data = []
-  response = HTTParty.get("https://api.appannie.com/v1/accounts/#{account_id}/apps/#{p[:app_id]}/sales?break_down=date&start_date=#{start_date.to_s}&end_date=#{end_date.to_s}", options)
+  response = HTTParty.get("https://api.appannie.com/v1/accounts/#{account_id}/apps/#{p[:app_id]}/sales?break_down=date&start_date=#{start_date.to_s}&end_date=#{end_date.to_s}", :headers => { "Authorization" => "bearer #{api_key}"})
 
   sales = response.parsed_response["sales_list"]
   sales.reverse!
